@@ -10,6 +10,10 @@ Because vim / neovim are way too complicated for my liking, and the original vi 
 My current goal is Posix compliance in feature set (so movement, regexes etc.), full Unicode support and a few more features, like brace folding and syntax highlighting.
 More complicated features are not planned ATM. Plugins/packages/scripting/config files are an explicit non-feature, I want all additions to be in the code
 
+# what can it do now
+
+It can draw the sceen if updated, set the position of the cursor and register a `:q`. It's a proof of concept, no more, no less.
+
 # references
 
 Posix vi: https://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
