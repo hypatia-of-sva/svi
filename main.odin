@@ -16,8 +16,8 @@ screenbuffer : [512][512]rune
 height, width : int
 curr_x, curr_y : int = 0, 0
 
-
-
+// always read a whole input block
+// allows detecting multiple keys down at once
 readbuffer: [1024]u8
 
 
@@ -27,27 +27,15 @@ vi_mode :: enum {
 
 current_mode : vi_mode = vi_mode.visual
 
-
+// flags to not overwhelm the terminal (emulator)
 screen_needs_drawing : bool = true
-
-
-/*
-putrune :: proc(r : rune, x : int, y : int) {
-    if(y == curr_y && x == curr_x) os.write_rune(os.stdout, r)
-    screenbuffer[y][x] = r
-}
-*/
+cursor_needs_updating : bool = true
 
 
 main :: proc() {
-
-
-
-    //fmt.print("\e[2J\e[H")
-
+    // call the terminal init functions
     _set_terminal()
     defer _restore_terminal()
-
 
     height, width = expand_values(_get_window_size())
 
@@ -57,9 +45,7 @@ main :: proc() {
         os.exit(1)
     }
 
-    //fmt.print(height, width)
-
-
+    // initial empty buffer
     for i in 0..<height {
         screenbuffer[i][0] = '~'
         for j in 1..<width {
@@ -67,12 +53,9 @@ main :: proc() {
         }
     }
 
-
-
+    // event loop
     for {
-        //r := libc.getchar()
-
-
+        // read the input
         n_read, err := os.read(os.stdin, readbuffer[:])
 
         // handle the input
@@ -89,6 +72,23 @@ main :: proc() {
                         curr_x = 1
                         curr_y = height-1
                         screen_needs_drawing = true
+
+                    case 'h':
+                        curr_x -= 1
+                        cursor_needs_updating = true
+
+                    case 'j':
+                        curr_y += 1
+                        cursor_needs_updating = true
+
+                    case 'k':
+                        curr_y -= 1
+                        cursor_needs_updating = true
+
+                    case 'l':
+                        curr_x += 1
+                        cursor_needs_updating = true
+
                 }
 
             case vi_mode.ex:
@@ -113,10 +113,11 @@ main :: proc() {
 
         }
 
+        // zero the input buffer (so to not handle characters twice)
         readbuffer = {}
 
 
-        // draw the screen
+        // draw the screen if necessary
         if(screen_needs_drawing) {
             //set the curser back to the beginning and clear the screen
             fmt.print("\e[2J\e[H")
@@ -132,11 +133,20 @@ main :: proc() {
                 }
             }
 
-            //reset the curser to its position
-            fmt.printf("\e[%d;%dH", curr_y+1, curr_x+1)
+            // cursor is now at end of screen and needs to be reset
+            cursor_needs_updating = true
 
             //say that you updated the screen
             screen_needs_drawing = false
+        }
+
+        // update the cursor if necessary
+        if(cursor_needs_updating) {
+            //reset the curser to its position
+            fmt.printf("\e[%d;%dH", curr_y+1, curr_x+1)
+
+            // say that you updated the cursor
+            cursor_needs_updating = false
         }
 
     }
