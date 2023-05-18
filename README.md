@@ -1,5 +1,5 @@
 # svi
-smol vi, written in odin
+smol vi, written in odin. (also, written by Sva. some people may call the name funny)
 
 # why another vi
 
