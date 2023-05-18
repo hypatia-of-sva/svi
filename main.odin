@@ -8,17 +8,30 @@ import "core:c/libc"
 import "core:time"
 
 
+// config constants
 
 // we presume noone uses crazy terminal sizes..
 // otherwise we quit down below.
 // this allows us to use static memory instead of allocators, when we only need one allocation.
-screenbuffer : [512][512]rune
+min_screen_height :: 10
+min_screen_width :: 10
+max_screen_height :: 512
+max_screen_width :: 512
+
+// size of read buffer in bytes
+read_buffer_size :: 1024
+
+
+
+// runtime variables of the editor
+
+screenbuffer : [max_screen_height][max_screen_width]rune
 height, width : int
 curr_x, curr_y : int = 0, 0
 
 // always read a whole input block
 // allows detecting multiple keys down at once
-readbuffer: [1024]u8
+readbuffer: [read_buffer_size]u8
 
 
 vi_mode :: enum {
@@ -40,8 +53,8 @@ main :: proc() {
     height, width = expand_values(_get_window_size())
 
     // terminal size sanity check
-    if (height < 10 || height > 512 || width < 10 || width > 512) {
-        fmt.print("Error: dimensions of terminal (y = ", height, ",x =", width, ") not allowed (must be at least 10x10 and at most 512x512)" )
+    if (height < min_screen_height || height > max_screen_height || width < min_screen_width || width > max_screen_width) {
+        fmt.printf("Error: dimensions of terminal (y = %d, x = %d) not allowed (must be at least %dx%d and at most %dx%d)", height , width, min_screen_height, min_screen_width, max_screen_height, max_screen_width )
         os.exit(1)
     }
 
