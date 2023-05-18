@@ -1,5 +1,5 @@
 # svi
-smol vi, written in odin. (also, written by Sva. some people may call the name funny)
+smol vi, written in odin. (smol as in simple, minimal, optimal and lean, or stupid, mad, obnoxious and lightheaded, depending on your attitude. also, written by _Sva_. yes, I know, hilarious comedy all around)
 
 # why another vi
 
