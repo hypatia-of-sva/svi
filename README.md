@@ -14,6 +14,10 @@ More complicated features are not planned ATM. Plugins/packages/scripting/config
 
 It can draw the sceen if updated, set the position of the cursor and register a `:q`. It's a proof of concept, no more, no less.
 
+# how to compile
+
+Have odin installed and run `odin run .`
+
 # references
 
 Posix vi: https://pubs.opengroup.org/onlinepubs/9699919799/utilities/vi.html
