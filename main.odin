@@ -133,7 +133,7 @@ main :: proc() {
         // draw the screen if necessary
         if(screen_needs_drawing) {
             //set the curser back to the beginning and clear the screen
-            fmt.print("\e[2J\e[H")
+            fmt.print("\e[H")
 
             //print the new screen
             for i in 0..<height {
@@ -155,6 +155,13 @@ main :: proc() {
 
         // update the cursor if necessary
         if(cursor_needs_updating) {
+
+            // clamp position to screen
+            if(curr_x < 0) do curr_x = 0
+            if(curr_x >= width) do curr_x = width-1
+            if(curr_y < 0) do curr_y = 0
+            if(curr_y >= height) do curr_x = height-1
+
             //reset the curser to its position
             fmt.printf("\e[%d;%dH", curr_y+1, curr_x+1)
 
