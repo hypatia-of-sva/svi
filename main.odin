@@ -132,7 +132,7 @@ main :: proc() {
 
         // draw the screen if necessary
         if(screen_needs_drawing) {
-            //set the curser back to the beginning and clear the screen
+            //set the curser back to the beginning
             fmt.print("\e[H")
 
             //print the new screen
