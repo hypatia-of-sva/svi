@@ -45,6 +45,21 @@ screen_needs_drawing : bool = true
 cursor_needs_updating : bool = true
 
 
+
+
+// key inputs (test on windows!):
+
+BACKSPACE :: 127 // i.e. DEL
+ENTER :: 13 // i.e CR, \r, = CTRL-M
+CTRL_A :: 1 // i.e. SOH
+CTRL_B :: 2
+CTRL_C :: 3
+//...
+CTRL_Z :: 26
+ESCAPE :: 27
+
+
+
 main :: proc() {
     // call the terminal init functions
     _set_terminal()
@@ -111,7 +126,7 @@ main :: proc() {
                         screenbuffer[curr_y][curr_x] = rune(c)
                         curr_x += 1
                         screen_needs_drawing = true
-                    case 13:
+                    case ENTER:
                         if(curr_y == height-1 && curr_x == 2 && screenbuffer[curr_y][curr_x-1] == 'q') do return
                         curr_x, curr_y = 0, 0
                         for j in 0..<width {
@@ -125,6 +140,19 @@ main :: proc() {
             case vi_mode.insert:
 
         }
+
+        /*
+        time.sleep(1000000000)
+        written := false
+        for r in readbuffer {
+            if r != 0 {
+                fmt.print(r, ':')
+                written = true
+            }
+
+        }
+        if written do fmt.print(';')
+        */
 
         // zero the input buffer (so to not handle characters twice)
         readbuffer = {}
